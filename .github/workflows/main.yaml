@@ -29,17 +29,20 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
       - name: Build the docker images
-        run: docker compose build
+        run: |
+          IMAGE_TAG=${{ github.run_number }}
+          docker compose build --build-arg IMAGE_TAG=${IMAGE_TAG}
 
       - name: List Docker images
-        run: docker images
+        run:
+          docker images
 
       - name: Tag Docker images
         run: |
           IMAGE_TAG=${{ github.run_number }}
-          docker tag client-react-nginx bosukeme/client-react-nginx:${IMAGE_TAG}
-          docker tag api-node bosukeme/api-node:${IMAGE_TAG}
-          docker tag api-flask bosukeme/api-flask:${IMAGE_TAG}
+          docker tag bosukeme/client-react-nginx bosukeme/client-react-nginx:${IMAGE_TAG}
+          docker tag bosukeme/api-node bosukeme/api-node:${IMAGE_TAG}
+          docker tag bosukeme/api-flask bosukeme/api-flask:${IMAGE_TAG}
 
       
       - name: Push Docker images
