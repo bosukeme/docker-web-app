@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  client-react-nginx:
+    container_name: client-react-nginx
+    labels:
+      shipyard.primary-route: true
+      shipyard.route: '/'
+    image: client-react-nginx
+    build:
+      context: ./client-react/
+      dockerfile: Dockerfile
+    init: true
+    networks:
+      - frontend
+    ports:
+      - 80:8080
+    restart: unless-stopped
+
+  api-node:
+    container_name: api-node
+    labels:
+      shipyard.route: '/api/node/'
+      shipyard.route.rewrite: true
+    # image: api-node
+    build:
+      context: ./api-node/
+      dockerfile: Dockerfile
+    init: true
+    depends_on:
+      - db
+    env_file:
+      - .env.local
+    networks:
+      - frontend
+      - backend
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+
+
+  api-flask:
+    container_name: api-flask
+    labels:
+      shipyard.route: '/api/flask/'
+      shipyard.route.rewrite: true
+    # image: api-flask
+    build:
+      context: ./api-flask/
+      dockerfile: Dockerfile
+    init: true
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - backend
+      - frontend
+    ports:
+      - 5000:5000
+    restart: unless-stopped
+
+  db:
+    image: postgres:15.1-alpine
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    env_file:
+      - .env
+    networks:
+      - backend
+    ports:
+      - 5432:5432
+volumes:
+  pgdata:
+networks:
+  frontend:
+  backend:
