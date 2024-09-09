@@ -38,8 +38,8 @@ jobs:
         run: |
           IMAGE_TAG=${{ github.run_number }}
           docker tag client-react-nginx bosukeme/client-react-nginx:${IMAGE_TAG}
-          docker tag directive-api-node bosukeme/api-node:${IMAGE_TAG}
-          docker tag directive-api-flask bosukeme/api-flask:${IMAGE_TAG}
+          docker tag api-node bosukeme/api-node:${IMAGE_TAG}
+          docker tag api-flask bosukeme/api-flask:${IMAGE_TAG}
 
       
       - name: Push Docker images
