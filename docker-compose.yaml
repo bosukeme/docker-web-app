@@ -1,10 +1,10 @@
-version: '3.8'
-
-
 services:
   client-react-nginx:
     container_name: client-react-nginx
     image: bosukeme/client-react-nginx:${IMAGE_TAG}
+    build:
+      args:
+        - IMAGE_TAG
     init: true
     networks:
       - frontend
@@ -16,6 +16,9 @@ services:
   api-node:
     container_name: api-node
     image: bosukeme/api-node:${IMAGE_TAG}
+    build:
+      args:
+        - IMAGE_TAG
     read_only: true
     init: true
     depends_on:
@@ -38,6 +41,9 @@ services:
   api-flask:
     container_name: api-flask
     image: bosukeme/api-flask:${IMAGE_TAG}
+    build:
+      args:
+        - IMAGE_TAG
     read_only: true
     init: true
     depends_on:

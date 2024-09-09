@@ -27,11 +27,13 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set IMAGE_TAG
+        run: echo "IMAGE_TAG=${{ github.run_number }}" >> $GITHUB_ENV
       
       - name: Build the docker images
         run: |
-          IMAGE_TAG=${{ github.run_number }}
-          docker compose build --build-arg IMAGE_TAG=${IMAGE_TAG}
+          docker compose build --build-arg IMAGE_TAG=${{ env.IMAGE_TAG }}
 
       - name: List Docker images
         run:
@@ -39,15 +41,13 @@ jobs:
 
       - name: Tag Docker images
         run: |
-          IMAGE_TAG=${{ github.run_number }}
-          docker tag bosukeme/client-react-nginx bosukeme/client-react-nginx:${IMAGE_TAG}
-          docker tag bosukeme/api-node bosukeme/api-node:${IMAGE_TAG}
-          docker tag bosukeme/api-flask bosukeme/api-flask:${IMAGE_TAG}
+          docker tag bosukeme/client-react-nginx bosukeme/client-react-nginx:${{ env.IMAGE_TAG }}
+          docker tag bosukeme/api-node bosukeme/api-node:${{ env.IMAGE_TAG }}
+          docker tag bosukeme/api-flask bosukeme/api-flask:${{ env.IMAGE_TAG }}
 
       
       - name: Push Docker images
         run: |
-          IMAGE_TAG=${{ github.run_number }}
-          docker push bosukeme/client-react-nginx:${IMAGE_TAG}
-          docker push bosukeme/api-node:${IMAGE_TAG}
-          docker push bosukeme/api-flask:${IMAGE_TAG}
+          docker push bosukeme/client-react-nginx:${{ env.IMAGE_TAG }}
+          docker push bosukeme/api-node:${{ env.IMAGE_TAG }}
+          docker push bosukeme/api-flask:${{ env.IMAGE_TAG }}
