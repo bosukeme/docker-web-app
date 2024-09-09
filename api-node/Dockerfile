@@ -1,6 +1,6 @@
 FROM node:19.6-bullseye-slim As base
 
-WORKDIR /usr/scr/app
+WORKDIR /usr/src/app
 
 COPY package*.json ./
 

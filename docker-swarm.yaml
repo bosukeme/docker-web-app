@@ -1,21 +1,28 @@
 version: '3.8'
 
-
 services:
   client-react-nginx:
     container_name: client-react-nginx
     image: bosukeme/client-react-nginx:${IMAGE_TAG}
+    deploy:
+      mode: replicated
+      replicas: 1
+      update_config:
+        order: start-first
     init: true
     networks:
       - frontend
-      - backend
     ports:
       - 80:8080
-    restart: unless-stopped
 
   api-node:
     container_name: api-node
     image: bosukeme/api-node:${IMAGE_TAG}
+    deploy:
+      mode: replicated
+      replicas: 1
+      update_config:
+        order: start-first
     read_only: true
     init: true
     depends_on:
@@ -23,21 +30,20 @@ services:
     env_file:
       - .env.local
     networks:
+      - frontend
       - backend
     ports:
       - 3000:3000
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "node", "/usr/src/app/healthcheck.js"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
 
 
   api-flask:
     container_name: api-flask
     image: bosukeme/api-flask:${IMAGE_TAG}
+    deploy:
+      mode: replicated
+      replicas: 1
+      update_config:
+        order: start-first
     read_only: true
     init: true
     depends_on:
@@ -46,15 +52,9 @@ services:
       - .env
     networks:
       - backend
+      - frontend
     ports:
       - 5000:5000
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "python3", "/app/healthcheck/healthcheck.py"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
 
   db:
     image: postgres:15.1-alpine
@@ -67,9 +67,9 @@ services:
     ports:
       - 5432:5432
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
-      interval: 30s
-      timeout: 10s
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
       retries: 5
 
 
