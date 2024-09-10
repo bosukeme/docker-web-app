@@ -33,7 +33,8 @@ jobs:
         run: |
           LATEST_TAG=$(curl -s https://hub.docker.com/v2/repositories/bosukeme/client-react-nginx/tags/?page_size=1 | jq -r '.results[0].name')
           echo "Latest tag is: ${LATEST_TAG}"
-          docker compose build --build-arg IMAGE_TAG=${ LATEST_TAG }
+          export IMAGE_TAG=${LATEST_TAG}
+          docker compose build
 
       - name: List Docker images
         run:
