@@ -44,6 +44,8 @@ jobs:
         run: |
           LATEST_TAG=$(curl -s https://hub.docker.com/v2/repositories/bosukeme/client-react-nginx/tags/?page_size=1 | jq -r '.results[0].name')
           NEW_TAG=$((LATEST_TAG + 1)) 
+          echo "Re-fetched Latest tag is: ${LATEST_TAG}"
+          echo "Re-fetched Latest tag is: ${NEW_TAG}"
           docker tag bosukeme/client-react-nginx:${ LATEST_TAG } bosukeme/client-react-nginx:${ NEW_TAG }
           docker tag bosukeme/api-node:${ LATEST_TAG } bosukeme/api-node:${ NEW_TAG }
           docker tag bosukeme/api-flask:${ LATEST_TAG } bosukeme/api-flask:${ NEW_TAG }
